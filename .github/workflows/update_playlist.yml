@@ -2,8 +2,8 @@ name: Update "On Repeat" Playlist
 
 on:
   schedule:
-    # Run every day
-    - cron: 52 22 * * *
+    # Run Tuesday and Saturday at 17:29 UTC
+    - cron: 29 17 * * 2,6
 
 jobs:
   build:
@@ -21,7 +21,8 @@ jobs:
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git commit -m "Update Playlist" -a
+        git add index.html
+        git commit -m "Update Playlist"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
