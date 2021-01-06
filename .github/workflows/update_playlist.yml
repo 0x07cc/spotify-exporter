@@ -2,8 +2,8 @@ name: Update "On Repeat" Playlist
 
 on:
   schedule:
-    # Run every day
-    - cron: 29 17 * * *
+    # Run Tuesday and Saturday at 17:29 UTC
+    - cron: 29 17 * * 2,6
 
 jobs:
   build:

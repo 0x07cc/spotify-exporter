@@ -6,6 +6,7 @@ in order to load the stylesheet and the scripts.
 You can download the .css and .js files to have it working offline.
 '''
 import time
+import socket
 
 
 class HTMLExporter:
@@ -31,12 +32,13 @@ class HTMLExporter:
         if self.outputFile is not None:
             # Swap %d and %m if you prefer mm-dd-yyyy
             now = time.strftime("%d/%m/%Y")
-            sourceHTML = '<a class="text-light" href='
+            sourceHTML = '<a class="text-light float-right" href='
             sourceHTML += '"https://github.com/0x07cc/spotify-exporter"'
             sourceHTML += ">Source on GitHub</a>"
+            name = socket.getfqdn()  # Hostname
             endingHTML = "          </tbody>\n        </table>\n        "
             endingHTML += '<footer class="text-light ml-1">'
-            endingHTML += f'Last edit: {now} {sourceHTML}</footer>\n'
+            endingHTML += f'Updated on {now} by {name} {sourceHTML}</footer>\n'
             endingHTML += "      </div>\n    </body>\n</html>"
             self.outputFile.write(endingHTML)
             self.outputFile.close()
