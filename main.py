@@ -4,7 +4,7 @@ Spotify Playlist Reader and Exporter:
 Given a public Spotify playlist URL, it creates an HTML file containing
 title, artists and album of the tracks in that playlist.
 This script is a test for GitHub Actions.
-Tested on Jan 2021.
+Tested on Jan 2022.
 '''
 import json
 import re
@@ -43,22 +43,18 @@ if r.status_code != 200:
 
 HTMLpage = r.text
 
-# Searching for the JSON data (Spotify.Entity = {...}).
-# This will match until "};" (not including "};").
-match = re.search("Spotify\.Entity.+?(?=\}\;)", HTMLpage)
+# Searching for the JSON data.
+# This will omit the two leading characters: {"
+match = re.search("session.+}</script>", HTMLpage)
 
 if match:
-    # Adding a "}" for valid JSON termination
-    dataString = HTMLpage[match.start():match.end()] + "}"
-    # Selecting only the text after "{"
-    bracketPosition = dataString.find("{")
-    if bracketPosition == -1:
-        print("Error while finding JSON in the page.")
-        abort()
-    dataString = dataString[bracketPosition:]
+    # Adding {" for a valid JSON string and removing the </script> tag
+    dataString = jsonss = '{"' + HTMLpage[match.start():match.end() - 9]
+
 else:
     print("Cannot find the JSON string in the page.")
     print("Is the URL a valid Spotify Playlist URL?")
+    print("Is the page format changed again?")
     abort()
 
 # Parsing JSON data
@@ -66,6 +62,27 @@ try:
     data = json.loads(dataString)
 except json.JSONDecodeError:
     print("Error while decoding JSON string.")
+    abort()
+
+if "entities" in data:
+    items = data["entities"]["items"]
+else:
+    print("Error while getting items")
+    abort()
+
+lastItem = ""
+for item in items:
+    print(f'item found: "{item}"')
+    lastItem = item
+
+if len(lastItem) == 0:
+    print("Error while getting last item")
+    abort()
+
+try:
+    data = items[lastItem]
+except KeyError:
+    print(f'Error while getting data for the item "{lastItem}"')
     abort()
 
 # Playlist name
