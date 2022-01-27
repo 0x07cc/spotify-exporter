@@ -73,7 +73,8 @@ else:
 lastItem = ""
 for item in items:
     print(f'item found: "{item}"')
-    lastItem = item
+    if "playlist" in item:
+        lastItem = item
 
 if len(lastItem) == 0:
     print("Error while getting last item")
