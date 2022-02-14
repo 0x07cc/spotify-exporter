@@ -4,10 +4,11 @@ Spotify Playlist Reader and Exporter:
 Given a public Spotify playlist URL, it creates an HTML file containing
 title, artists and album of the tracks in that playlist.
 This script is a test for GitHub Actions.
-Tested on Jan 2022.
+Tested on Feb 2022.
 '''
 import json
 import re
+import base64
 import requests
 import htmlexporter
 
@@ -43,13 +44,13 @@ if r.status_code != 200:
 
 HTMLpage = r.text
 
-# Searching for the JSON data.
+# Searching for the Base64 encoded JSON data.
 # This will omit the two leading characters: {"
-match = re.search("session.+}</script>", HTMLpage)
+match = re.search("<script type=\"application/json\" id=\"initial-state\">[A-Za-z\d+/=]+</script>", HTMLpage)
 
 if match:
-    # Adding {" for a valid JSON string and removing the </script> tag
-    dataString = jsonss = '{"' + HTMLpage[match.start():match.end() - 9]
+    # Skipping leading and trailing tags
+    dataString = HTMLpage[match.start() + 51:match.end() - 9]
 
 else:
     print("Cannot find the JSON string in the page.")
@@ -57,8 +58,9 @@ else:
     print("Is the page format changed again?")
     abort()
 
-# Parsing JSON data
+# Base64 decoding and parsing JSON data
 try:
+    dataString = base64.b64decode(dataString)
     data = json.loads(dataString)
 except json.JSONDecodeError:
     print("Error while decoding JSON string.")
