@@ -13,7 +13,7 @@ import requests
 import htmlexporter
 
 # Parameters
-url = "https://open.spotify.com/playlist/37i9dQZF1EpyzGli8mJhi9"
+url = "https://open.spotify.com/playlist/0v7CRH3eM2gNUNH22MoTNQ?si=0C5RZCFdTqWI4jwFykeWgA&nd=1"
 outputFile = "index.html"
 
 
