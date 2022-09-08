@@ -46,16 +46,17 @@ HTMLpage = r.text
 
 # Searching for the Base64 encoded JSON data.
 # This will omit the two leading characters: {"
-match = re.search("<script type=\"application/json\" id=\"initial-state\">[A-Za-z\d+/=]+</script>", HTMLpage)
+# match = re.search("<script type=\"application/json\" id=\"initial-state\">[A-Za-z\d+/=]+</script>", HTMLpage)
+match = re.search("<script id=\"initial-state\" type=\"text/plain\">([A-Za-z\d+/=]+)</script>", HTMLpage)
 
 if match:
     # Skipping leading and trailing tags
-    dataString = HTMLpage[match.start() + 51:match.end() - 9]
+    dataString = match.group(1)
 
 else:
     print("Cannot find the JSON string in the page.")
     print("Is the URL a valid Spotify Playlist URL?")
-    print("Is the page format changed again?")
+    print("Did the page format change again?")
     abort()
 
 # Base64 decoding and parsing JSON data
