@@ -98,36 +98,37 @@ else:
 
 exporter = htmlexporter.HTMLExporter(playlistName, outputFile)
 
-if "tracks" not in data or "items" not in data["tracks"]:
+if "content" not in data or "items" not in data["content"]:
     print("No tracks found in JSON data. Is this a playlist?")
     abort()
 
-for track in data["tracks"]["items"]:
+for track in data["content"]["items"]:
     try:
+        track = track["item"]["data"]
         # Album
-        album = track["track"]["album"]
+        album = track["albumOfTrack"]
         # Album name
         albumString = album["name"]
         # Picture (300x300)
-        coverURL = album["images"][1]
+        coverURL = album["coverArt"]["sources"][0]["url"]
 
         # Artist : A track can have several artists.
         artistString = ""
-        artists = track["track"]["artists"]
+        artists = track["artists"]["items"]
 
         artistsSize = len(artists)
         if artistsSize == 1:
-            artistString = artists[0]["name"]
+            artistString = artists[0]["profile"]["name"]
         elif artistsSize > 1:
             for i in range(artistsSize):
                 # If this is not the last artist, add a comma.
                 if i < (artistsSize - 1):
-                    artistString += artists[i]["name"] + ", "
+                    artistString += artists[i]["profile"]["name"] + ", "
                 else:
-                    artistString += artists[i]["name"]
+                    artistString += artists[i]["profile"]["name"]
 
         # A track has only a name
-        nameString = track["track"]["name"]
+        nameString = track["name"]
         exporter.addRow(Track(nameString, artistString, albumString, coverURL))
     except (ValueError, KeyError):
         print("Error while getting data for a song")
