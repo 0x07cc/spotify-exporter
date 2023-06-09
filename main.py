@@ -104,7 +104,7 @@ if "content" not in data or "items" not in data["content"]:
 
 for track in data["content"]["items"]:
     try:
-        track = track["item"]["data"]
+        track = track["itemV2"]["data"]
         # Album
         album = track["albumOfTrack"]
         # Album name
